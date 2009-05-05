@@ -436,6 +436,7 @@ module Squirrel
         @name = name
         @sql = nil
         @negative = false
+        @upcase = false
       end
 
       [ :==, :===, :=~, :<=>, :<=, :<, :>, :>= ].each do |op|
@@ -460,6 +461,11 @@ module Squirrel
       
       def -@ #:nodoc:
         @negative = !@negative
+        self
+      end
+
+      def upcase
+        @upcase = true
         self
       end
 
@@ -509,7 +515,9 @@ module Squirrel
           else                   [ op,        arg_format,        values ]
           end
         end		
-        sql = "#{full_name} #{op} #{arg_format}"
+        sql = full_name
+        sql = "UPPER(#{sql})" if @upcase
+        sql = "#{sql} #{op} #{arg_format}"
         sql = "NOT (#{sql})" if @negative
         [ sql, *values ]
       end

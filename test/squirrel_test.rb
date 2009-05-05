@@ -115,6 +115,14 @@ class SquirrelTest < Test::Unit::TestCase
 		assert_equal ["(NOT (companies.id = ?) AND NOT (companies.id = ? OR companies.id = ?))", 3, 1, 2],
                  query.conditions.to_find_conditions
 	end
+
+	def test_upper_case
+		query = Address.find(:query) do
+			city.upcase == 'cambridge'.upcase
+		end
+		assert_equal ["(UPPER(addresses.city) = ?)", 'cambridge'.upcase],
+                 query.conditions.to_find_conditions
+	end
 	
 	def test_ordering
 		query = Address.find(:query) { order_by id }
